@@ -10,8 +10,8 @@ import serial.serialposix as s
 class vedirect:
 
     def __init__(self, serialport, timeout):
-        self.serialport = serialport
-        self.ser = s.Serial(serialport, 19200, timeout=timeout)
+        self.serialport = '/dev/ttyAMA0'
+        self.ser = s.Serial('/dev/ttyAMA0', 19200, timeout=timeout)
         self.header1 = '\r'
         self.header2 = '\n'
         self.hexmarker = ':'
@@ -21,10 +21,12 @@ class vedirect:
         self.bytes_sum = 0
         self.state = self.WAIT_HEADER
         self.dict = {}
+        print('1')
 
     (HEX, WAIT_HEADER, IN_KEY, IN_VALUE, IN_CHECKSUM) = range(5)
 
     def input(self, byte):
+        print('2')
         if byte == self.hexmarker and self.state != self.IN_CHECKSUM:
             self.state = self.HEX
 
@@ -80,12 +82,14 @@ class vedirect:
 
 
     def read_data(self):
+        print('3')
         while True:
             byte = self.ser.read(1)
             packet = self.input(byte)
 
 
     def read_data_single(self):
+        print('4')
         while True:
             byte = self.ser.read(1)
             packet = self.input(byte)
@@ -94,8 +98,12 @@ class vedirect:
 
 
     def read_data_callback(self, callbackFunction):
+        print('5')
         while True:
+            print('hello')
             byte = self.ser.read(1)
+            print(byte)
+            print('im here')
             if byte:
                 packet = self.input(byte)
                 if (packet != None):
@@ -105,6 +113,7 @@ class vedirect:
 
 
 def print_data_callback(data):
+    print('6')
     print(data)
 
 
@@ -112,6 +121,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Process VE.Direct protocol')
     parser.add_argument('--port', help='Serial port')
     parser.add_argument('--timeout', help='Serial port read timeout', type=int, default='60')
+    print('main')
     args = parser.parse_args()
     ve = vedirect(args.port, args.timeout)
     ve.read_data_callback(print_data_callback)

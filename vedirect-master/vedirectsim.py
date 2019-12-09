@@ -6,8 +6,8 @@ import os, serial, time
 class vedirectsim:
 
     def __init__(self, serialport):
-        self.serialport = serialport
-        self.ser = serial.Serial(serialport, 19200, timeout=10)
+        self.serialport = '/dev/ttyAMA0'
+        self.ser = serial.Serial('/dev/ttyAMA0', 19200, timeout=10)
         self.dict = {'V': '12800', 'VS': '12800', 'VM': '1280', 'DM': '120',
                      'VPV': '3350', 'PPV': '130', 'I': '15000', 'IL': '1500',
                      'LOAD': 'ON', 'T': '25', 'P': '130', 'CE': '13500',
@@ -46,7 +46,7 @@ class vedirectsim:
 
         
 if __name__ == '__main__':
-    ve = vedirectsim('/tmp/vmodem0')
+    ve = vedirectsim('/dev/ttyAMA0')
     while True:
         ve.send_packet()
         time.sleep(1)
